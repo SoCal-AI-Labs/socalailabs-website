@@ -20,7 +20,7 @@ const SERVICES = [
     desc: "Autonomous multi-agent pipelines that handle tasks, make decisions, and operate without constant supervision.",
   },
   {
-    title: "Lead Generation Automation",
+    title: "Lead Automation",
     desc: "Outreach systems that identify prospects, personalize messaging, and fill your pipeline while you sleep.",
   },
   {
