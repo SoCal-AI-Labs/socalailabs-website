@@ -31,6 +31,10 @@ const SERVICES = [
     title: "Custom AI Integrations",
     desc: "Wire LLMs like Claude and GPT directly into your business systems, dashboards, and existing stack.",
   },
+  {
+    title: "AI Visual Identity",
+    desc: "From logos to brand systems — we generate AI-powered visual assets that position your business as a premium, modern operation from day one.",
+  },
 ];
 
 // Headline split into words; the final three carry the amber->orange ignite.
