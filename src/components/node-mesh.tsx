@@ -34,9 +34,11 @@ export default function NodeMesh({ className }: { className?: string }) {
     const pointer = { x: -9999, y: -9999, active: false };
 
     const seed = () => {
+      // Mobile (<768px): cap the constellation at 30 nodes for performance.
+      const isMobile = width < 768;
       const target = Math.min(
-        64,
-        Math.max(20, Math.round((width * height) / 22000))
+        isMobile ? 30 : 64,
+        Math.max(isMobile ? 12 : 20, Math.round((width * height) / 22000))
       );
       nodes = Array.from({ length: target }, () => ({
         x: Math.random() * width,

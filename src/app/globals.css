@@ -701,6 +701,58 @@ footer a:focus-visible {
   color: var(--color-ink-faint);
 }
 
+/* ---------- "How It Works" process steps ---------- */
+.process-step {
+  position: relative;
+  z-index: 1;
+  border-radius: 16px;
+  padding: 1.5rem 1.5rem 1.75rem;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.045),
+    rgba(255, 255, 255, 0.015)
+  );
+  border: 1px solid var(--color-hairline);
+}
+.process-num {
+  display: inline-block;
+  margin-bottom: 0.85rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 1.7rem;
+  font-weight: 700;
+  line-height: 1;
+}
+/* Subtle horizontal connector strung across the steps — desktop only.
+   Sits behind the cards (z-0) so it reads as a line linking them. */
+@media (min-width: 768px) {
+  .process::before {
+    content: "";
+    position: absolute;
+    top: 2.4rem;
+    left: 9%;
+    right: 9%;
+    height: 1px;
+    z-index: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(249, 115, 22, 0.4) 18%,
+      rgba(245, 158, 11, 0.4) 82%,
+      transparent
+    );
+  }
+}
+
+/* ---------- Mobile: disable hero parallax (perf + avoids scroll jank) ----------
+   The rAF engine still writes --hero-py, but on phones we ignore it so the
+   gradient + particles sit still while you scroll. */
+@media (max-width: 767px) {
+  #top .aurora,
+  #top .particles {
+    translate: none;
+  }
+}
+
 /* ============================================================
    Reduced-motion kill switch — calm, fully legible static render.
    Neutralizes loops/scrubs and snaps every reveal to its end state.

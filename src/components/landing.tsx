@@ -65,6 +65,30 @@ const STACK = [
   "Operations AI",
 ];
 
+// "How It Works" — four-step process.
+const PROCESS = [
+  {
+    n: "01",
+    title: "Discover",
+    desc: "We learn your business, map your workflows, and identify where AI creates the most leverage.",
+  },
+  {
+    n: "02",
+    title: "Build",
+    desc: "We design and deploy a custom AI system built specifically for your operation — no templates, no shortcuts.",
+  },
+  {
+    n: "03",
+    title: "Deploy",
+    desc: "Your system goes live on real infrastructure, tested, documented, and ready to run autonomously.",
+  },
+  {
+    n: "04",
+    title: "Maintain",
+    desc: "We monitor, optimize, and evolve your system over time so it keeps performing as your business grows.",
+  },
+];
+
 export default function Landing() {
   const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -434,6 +458,34 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* HOW IT WORKS — four-step process */}
+      <section id="process" className="relative mx-auto max-w-6xl px-6 py-28">
+        <p className="kicker reveal mb-3">How It Works</p>
+        <h2 className="reveal mb-4 text-3xl font-bold md:text-4xl">
+          From first call to autonomous system
+        </h2>
+        <p className="reveal mb-14 max-w-2xl text-[color:var(--color-ink-soft)]">
+          A clear path from understanding your business to a system that runs
+          itself.
+        </p>
+
+        <div className="process stagger relative grid grid-cols-1 gap-6 md:grid-cols-4">
+          {PROCESS.map((step, i) => (
+            <div
+              key={step.n}
+              className="process-step"
+              style={cssVars({ "--i": i })}
+            >
+              <div className="process-num ignite">{step.n}</div>
+              <h3 className="mb-2 text-xl font-semibold">{step.title}</h3>
+              <p className="text-sm leading-relaxed text-[color:var(--color-ink-soft)]">
+                {step.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* ABOUT — pinned "hold and morph" beat */}
       <section id="about" ref={pinRef} className="pin-wrap">
         <div className="pin px-6">
@@ -451,6 +503,42 @@ export default function Landing() {
             <p className="mt-8 font-mono text-xs tracking-widest text-[color:var(--color-ink-faint)]">
               FOUNDER: MATT · BASE: SOUTHERN CALIFORNIA · STATUS: BUILDING
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* FOUNDER */}
+      <section id="founder" className="relative mx-auto max-w-3xl px-6 py-28">
+        <p className="kicker reveal mb-3">Founder</p>
+        <div className="reveal glass rounded-2xl p-8 md:p-10">
+          <h2 className="text-2xl font-bold md:text-3xl">Matthew Garrigue</h2>
+          <p className="mt-1 font-mono text-sm tracking-wide text-[color:var(--color-orange)]">
+            Founder &amp; AI Systems Builder
+          </p>
+          <p className="mt-6 leading-relaxed text-[color:var(--color-ink-soft)]">
+            I&apos;ve spent the last several years building autonomous AI
+            systems — from trading bots and multi-agent dashboards to Discord
+            communities and motion websites. SoCal AI Labs is how I take what
+            I&apos;ve built for myself and deploy it for businesses that are
+            ready to operate at a different level.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a
+              href="https://linkedin.com/in/socalailabs"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-ghost"
+            >
+              LinkedIn ↗
+            </a>
+            <a
+              href="https://github.com/SoCal-AI-Labs"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-ghost"
+            >
+              GitHub ↗
+            </a>
           </div>
         </div>
       </section>
