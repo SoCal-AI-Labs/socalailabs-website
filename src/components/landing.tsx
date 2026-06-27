@@ -412,7 +412,7 @@ export default function Landing() {
             constant attention.
           </p>
 
-          <div className="stagger grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
+          <div className="stagger grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
             {SERVICES.map((s, i) => (
               <div
                 key={s.title}
