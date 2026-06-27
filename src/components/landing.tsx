@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import NodeMesh from "./node-mesh";
+
 type FormState = {
   name: string;
   email: string;
@@ -41,6 +43,18 @@ const HEADLINE = [
   { t: "Work", ignite: true },
   { t: "For", ignite: true },
   { t: "You", ignite: true },
+];
+
+// High-tech capability marquee (duplicated in render for a seamless loop).
+const STACK = [
+  "Multi-Agent Systems",
+  "RAG Pipelines",
+  "Workflow Automation",
+  "LLM Integrations",
+  "Lead Generation",
+  "Autonomous Agents",
+  "Claude & GPT",
+  "Operations AI",
 ];
 
 export default function Landing() {
@@ -103,6 +117,11 @@ export default function Landing() {
         const max = root.scrollHeight - root.clientHeight;
         const sp = max > 0 ? root.scrollTop / max : 0;
         root.style.setProperty("--sp", sp.toFixed(4));
+        // Parallax depth: hero background trails to ~0.3x scroll speed.
+        root.style.setProperty(
+          "--hero-py",
+          (root.scrollTop * 0.7).toFixed(1) + "px"
+        );
 
         const wrap = pinRef.current;
         if (wrap) {
@@ -298,8 +317,9 @@ export default function Landing() {
         className="relative flex min-h-screen flex-col items-center justify-center overflow-clip px-6 text-center"
       >
         <div className="aurora" aria-hidden />
+        <NodeMesh className="node-mesh" />
         <div className="particles" aria-hidden>
-          {Array.from({ length: 14 }).map((_, i) => (
+          {Array.from({ length: 7 }).map((_, i) => (
             <span
               key={i}
               style={cssVars({
@@ -350,38 +370,59 @@ export default function Landing() {
           SCROLL
           <span className="h-8 w-px bg-gradient-to-b from-orange-500/70 to-transparent" />
         </div>
+
+        <div
+          className="hud-readout absolute bottom-9 right-6 z-10 hidden md:block"
+          aria-hidden
+        >
+          34.0522° N · 118.2437° W
+        </div>
       </section>
 
-      {/* SERVICES */}
-      <section id="services" className="relative mx-auto max-w-6xl px-6 py-28">
-        <p className="kicker reveal mb-3">01 — What We Build</p>
-        <h2 className="reveal mb-4 text-3xl font-bold md:text-4xl">
-          Systems that run the work for you
-        </h2>
-        <p className="reveal mb-14 max-w-2xl text-[color:var(--color-ink-soft)]">
-          Four ways we route intelligence into your business — each one
-          autonomous, production-ready, and built to operate without your
-          constant attention.
-        </p>
-
-        <div className="stagger grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
-          {SERVICES.map((s, i) => (
-            <div
-              key={s.title}
-              className="spot-card glass p-6"
-              style={cssVars({ "--i": i })}
-            >
-              <div className="mb-3 font-mono text-[0.7rem] tracking-widest text-[color:var(--color-ink-faint)]">
-                {`A${i}`}
-              </div>
-              <h3 className="mb-3 text-lg font-semibold">
-                <span className="ignite">{s.title}</span>
-              </h3>
-              <p className="text-sm leading-relaxed text-[color:var(--color-ink-soft)]">
-                {s.desc}
-              </p>
-            </div>
+      {/* CAPABILITY TICKER */}
+      <div className="ticker relative z-10" aria-hidden>
+        <div className="ticker__track">
+          {[...STACK, ...STACK].map((item, i) => (
+            <span key={i} className="ticker__item">
+              {item}
+            </span>
           ))}
+        </div>
+      </div>
+
+      {/* SERVICES */}
+      <section id="services" className="relative overflow-clip px-6 py-28">
+        <div className="tech-grid" aria-hidden />
+        <div className="relative z-10 mx-auto max-w-6xl">
+          <p className="kicker reveal mb-3">01 — What We Build</p>
+          <h2 className="reveal mb-4 text-3xl font-bold md:text-4xl">
+            Systems that run the work for you
+          </h2>
+          <p className="reveal mb-14 max-w-2xl text-[color:var(--color-ink-soft)]">
+            Four ways we route intelligence into your business — each one
+            autonomous, production-ready, and built to operate without your
+            constant attention.
+          </p>
+
+          <div className="stagger grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
+            {SERVICES.map((s, i) => (
+              <div
+                key={s.title}
+                className="spot-card glass p-6"
+                style={cssVars({ "--i": i })}
+              >
+                <div className="mb-3 font-mono text-[0.7rem] tracking-widest text-[color:var(--color-ink-faint)]">
+                  {`[ 0${i + 1} ]`}
+                </div>
+                <h3 className="mb-3 text-lg font-semibold">
+                  <span className="ignite">{s.title}</span>
+                </h3>
+                <p className="text-sm leading-relaxed text-[color:var(--color-ink-soft)]">
+                  {s.desc}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -412,6 +453,7 @@ export default function Landing() {
         className="relative flex flex-col items-center overflow-clip px-6 py-32 text-center"
       >
         <div className="aurora" aria-hidden />
+        <NodeMesh className="node-mesh" />
         <p className="kicker reveal relative z-10 mb-3">03 — Contact</p>
         <h2 className="reveal relative z-10 text-4xl font-bold md:text-6xl">
           Ready to <span className="ignite">Build</span>?

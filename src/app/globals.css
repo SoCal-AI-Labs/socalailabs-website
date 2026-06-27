@@ -28,6 +28,7 @@
 
 :root {
   --sp: 0; /* 0..1 page scroll progress, written once per frame by rAF */
+  --hero-py: 0px; /* hero parallax offset (px), written once per frame by rAF */
 }
 
 * {
@@ -162,15 +163,18 @@ body {
 /* ---------- Aurora (scoped to hero + contact, not full page) ---------- */
 .aurora {
   position: absolute;
-  inset: -25%;
+  inset: -10%;
   z-index: 0;
   pointer-events: none;
-  filter: blur(70px) saturate(135%);
-  opacity: 0.55;
+  opacity: 0.5;
+  /* No filter: blur() — Firefox flickers/tears an animated large-radius blur
+     layer, especially when an ancestor's overflow:clip cuts it (this blob sits
+     in the top-right). The radial gradients already fall off softly, so the
+     aurora reads the same while being cheaper and glitch-free everywhere. */
   background:
-    radial-gradient(38% 48% at 26% 32%, var(--color-amber) 0%, transparent 60%),
-    radial-gradient(44% 52% at 74% 38%, var(--color-orange) 0%, transparent 60%),
-    radial-gradient(48% 58% at 50% 82%, var(--color-amber) 0%, transparent 65%);
+    radial-gradient(40% 50% at 26% 32%, rgba(245, 158, 11, 0.55) 0%, transparent 70%),
+    radial-gradient(46% 54% at 74% 38%, rgba(249, 115, 22, 0.5) 0%, transparent 70%),
+    radial-gradient(52% 60% at 50% 82%, rgba(245, 158, 11, 0.4) 0%, transparent 72%);
   animation: aurora-drift 24s var(--ease-cine) infinite alternate;
   will-change: transform;
 }
@@ -224,6 +228,19 @@ body {
     transform: translateY(-112vh) translateX(var(--drift, 24px));
     opacity: 0;
   }
+}
+
+/* ---------- Parallax depth: hero background lags behind the foreground -------
+   The rAF engine writes --hero-py (px) ≈ scrollTop * 0.7, applied via the
+   `translate` property so it COMPOSES with the aurora's drift `transform`
+   animation instead of overwriting it. Net effect: the hero gradient +
+   particles rise at ~0.3x scroll speed while the text scrolls at 1x, giving a
+   cinematic depth. Scoped to #top so the contact aurora is untouched; falls
+   back to 0 under reduced motion (the rAF engine is gated off there). */
+#top .aurora,
+#top .particles {
+  translate: 0 var(--hero-py, 0px);
+  will-change: transform, translate;
 }
 
 /* ---------- Reveal-on-scroll (IO toggles .in-view; hidden only when .motion) ----------
@@ -382,7 +399,7 @@ footer a:focus-visible {
   position: relative;
   border-radius: 18px;
   overflow: hidden;
-  transition: transform 0.3s var(--ease-cine);
+  transition: transform 0.3s var(--ease-cine), box-shadow 0.4s ease;
 }
 .spot-card::before {
   content: "";
@@ -418,6 +435,30 @@ footer a:focus-visible {
 }
 .spot-card:hover {
   transform: translateY(-4px);
+  /* Glowing amber/orange neon (#f97316): a 1px ring + soft outer glow.
+     The box-shadow transition (on .spot-card) handles smooth fade on/off; the
+     delayed neon-pulse then breathes the glow slightly. Its 0%/100% frames
+     match the resting glow so it starts seamlessly after the fade-in. */
+  box-shadow:
+    0 0 0 1px rgba(249, 115, 22, 0.5),
+    0 0 20px rgba(249, 115, 22, 0.35),
+    0 0 50px rgba(249, 115, 22, 0.15);
+  animation: neon-pulse 2.4s ease-in-out 0.4s infinite;
+}
+@keyframes neon-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px rgba(249, 115, 22, 0.5),
+      0 0 20px rgba(249, 115, 22, 0.35),
+      0 0 50px rgba(249, 115, 22, 0.15);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(249, 115, 22, 0.75),
+      0 0 30px rgba(249, 115, 22, 0.55),
+      0 0 72px rgba(249, 115, 22, 0.28);
+  }
 }
 
 /* ---------- "Signal Routing" connector through the service nodes ---------- */
@@ -467,14 +508,16 @@ footer a:focus-visible {
 /* ---------- Sticky nav scrolled state ---------- */
 .nav {
   transition: padding 0.35s var(--ease-cine), background 0.35s ease,
-    border-color 0.35s ease, backdrop-filter 0.35s ease;
+    border-color 0.35s ease;
   border-bottom: 1px solid transparent;
 }
 .nav.scrolled {
-  background: rgba(11, 12, 16, 0.72);
+  /* Solid-ish backing instead of backdrop-filter: Firefox flickers/tears a
+     backdrop-blurred fixed bar that sits over the animated hero/contact mesh.
+     An opaque dark plate reads the same on the near-black base and is
+     glitch-free in every browser. */
+  background: rgba(11, 12, 16, 0.9);
   border-bottom-color: var(--color-hairline);
-  backdrop-filter: blur(14px) saturate(140%);
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
 }
 .status-dot {
   animation: pulse-dot 1.8s ease-in-out infinite;
@@ -573,6 +616,92 @@ footer a:focus-visible {
 }
 
 /* ============================================================
+   High-tech abstract layers — neural mesh, blueprint grid, capability
+   ticker, HUD readouts. All amber, decorative (aria-hidden), and
+   neutralized under reduced motion (kill switch below).
+   ============================================================ */
+
+/* Interactive neural-mesh canvas (drawn in node-mesh.tsx) */
+.node-mesh {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.6;
+  /* Edge fade is baked INTO the canvas (see node-mesh.tsx), not a CSS
+     mask-image: Firefox flickers/tears when a mask layer composites over a
+     canvas that repaints every frame. translateZ(0) keeps it on a stable
+     compositor layer. */
+  transform: translateZ(0);
+}
+
+/* Blueprint grid — faint amber graph paper, edge-faded by a radial mask */
+.tech-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(245, 158, 11, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(245, 158, 11, 0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+  -webkit-mask-image: radial-gradient(115% 80% at 50% 45%, #000 22%, transparent 78%);
+  mask-image: radial-gradient(115% 80% at 50% 45%, #000 22%, transparent 78%);
+}
+
+/* Capability ticker — infinite marquee (content duplicated for a seamless
+   -50% loop); pauses on hover. */
+.ticker {
+  position: relative;
+  overflow: hidden;
+  border-block: 1px solid var(--color-hairline);
+  background: rgba(255, 255, 255, 0.015);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+.ticker__track {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  padding-block: 0.85rem;
+  animation: ticker-scroll 40s linear infinite;
+  will-change: transform;
+}
+.ticker:hover .ticker__track {
+  animation-play-state: paused;
+}
+.ticker__item {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
+  padding: 0 1.6rem;
+}
+.ticker__item::before {
+  content: "◆";
+  margin-right: 1.6rem;
+  color: var(--color-orange);
+  font-size: 0.62em;
+  vertical-align: middle;
+}
+@keyframes ticker-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* HUD mono readout (coordinates, status tags) */
+.hud-readout {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  color: var(--color-ink-faint);
+}
+
+/* ============================================================
    Reduced-motion kill switch — calm, fully legible static render.
    Neutralizes loops/scrubs and snaps every reveal to its end state.
    ============================================================ */
@@ -617,5 +746,9 @@ footer a:focus-visible {
   .check,
   .check-ring {
     stroke-dashoffset: 0;
+  }
+  .ticker__track {
+    animation: none;
+    transform: none;
   }
 }
