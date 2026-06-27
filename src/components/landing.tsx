@@ -35,6 +35,10 @@ const SERVICES = [
     title: "AI Visual Identity",
     desc: "From logos to brand systems — we generate AI-powered visual assets that position your business as a premium, modern operation from day one.",
   },
+  {
+    title: "Motion Websites",
+    desc: "Cinematic, scroll-driven websites with live particle systems, parallax depth, and interactive animations — built in days, not months. The kind of site agencies quote $15,000–$35,000 for.",
+  },
 ];
 
 // Headline split into words; the final three carry the amber->orange ignite.
