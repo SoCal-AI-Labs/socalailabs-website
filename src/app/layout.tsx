@@ -15,11 +15,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://socalailabs.com"),
   title: {
-    default: "SoCal AI Labs — We Build AI Systems That Work For You",
+    default: "SoCal AI Labs — AI Systems That Run Themselves",
     template: "%s · SoCal AI Labs",
   },
   description:
-    "SoCal AI Labs designs and deploys autonomous AI systems for small and mid-size businesses across Southern California — from lead generation to full operations automation.",
+    "AI consulting and digital systems for Southern California businesses.",
   keywords: [
     "AI consulting",
     "AI automation",
@@ -28,20 +28,31 @@ export const metadata: Metadata = {
     "lead generation",
     "operations automation",
   ],
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/android-chrome-192x192.png", sizes: "192x192", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+  },
+  manifest: "/site.webmanifest",
   openGraph: {
-    title: "SoCal AI Labs — We Build AI Systems That Work For You",
+    title: "SoCal AI Labs",
     description:
-      "Autonomous, production-ready AI systems for small and mid-size businesses. Southern California.",
-    url: "/",
+      "AI consulting and digital systems for Southern California businesses.",
+    url: "https://socalailabs.com",
     siteName: "SoCal AI Labs",
-    images: ["/logo.png"],
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "SoCal AI Labs",
-    description: "We Build AI Systems That Work For You.",
-    images: ["/logo.png"],
+    description:
+      "AI consulting and digital systems for Southern California businesses.",
+    images: ["/og-image.png"],
   },
 };
 
