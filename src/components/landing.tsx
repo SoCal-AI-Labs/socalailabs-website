@@ -267,14 +267,15 @@ export default function Landing() {
     if (showForm && submitted) closeBtnRef.current?.focus();
   }, [showForm, submitted]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const honeypot = new FormData(e.currentTarget).get("_gotcha") ?? "";
     setStatus("sending");
     try {
       const response = await fetch("https://formspree.io/f/xykqgeeg", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, _gotcha: honeypot }),
       });
       if (response.ok) {
         setSubmitted(true);
@@ -650,6 +651,14 @@ export default function Landing() {
                   Tell us about what you need and we will be in touch quickly.
                 </p>
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  <input
+                    type="text"
+                    name="_gotcha"
+                    hidden
+                    aria-hidden="true"
+                    tabIndex={-1}
+                    autoComplete="off"
+                  />
                   <input
                     type="text"
                     name="name"
